@@ -1,13 +1,19 @@
 import React from "react";
-import { Form, Button, List, Input, Card, Icon } from 'antd';
+import { Button, List, Card, Icon } from 'antd';
+import NicknameEditForm from '../components/NicknameEditForm';
+
+const dummy = { // 서버로부터 아직 받은 데이터가 없기 때문에 가짜데이터를 만들어 놓자.
+  nickname : '문건우',
+  Post : [],
+  Followings : [],
+  Followers : [],
+  isLoggedIn : false,
+}
 
 const Profile = () => {
   return (
     <div>
-      <Form style={{marginBottom : '20px', border:'1px solid #d9d9d9', padding: '20px'}}>
-        <Input addonBefore="닉네임"/>
-        <Button type="primary">수정</Button>
-      </Form>
+      <NicknameEditForm />
       <List
         style={{ marginBottom : '20px'}}
         grid={{ gutter : 4, xs: 2, md: 3}}

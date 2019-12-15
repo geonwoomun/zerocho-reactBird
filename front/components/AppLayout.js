@@ -1,8 +1,9 @@
 import React from 'react';
 import Link from 'next/link';
 import PropTypes from 'prop-types';
-import { Menu, Input, Button, Row, Col, Card, Avatar, Form } from 'antd';
+import { Menu, Input, Row, Col } from 'antd';
 import LoginForm from './LoginForm';
+import UserProfile from './UserProfile';
 
 const dummy = { // 서버로부터 아직 받은 데이터가 없기 때문에 가짜데이터를 만들어 놓자.
     nickname : '문건우',
@@ -21,26 +22,21 @@ const AppLayout = ({children}) => { // props
                     <Input.Search enterButton style={{verticalAlign : "middle"}} />
                 </Menu.Item>
             </Menu>
-            <Row gutter={10}>
+            <Row gutter={8}>
                 <Col xs={24} md={6}>
                     {dummy.isLoggedIn
-                     ? <Card 
-                        actions = {[
-                        <div key="twit">짹짹<br/>{dummy.Post.length}</div>,
-                        <div key="follwing">팔로잉<br/>{dummy.Followings.length}</div>,
-                        <div key="follower">팔로워<br/>{dummy.Followers.length}</div>,
-                        ]}
-                    >
-                        <Card.Meta
-                        avatar={<Avatar>{dummy.nickname[0]}</Avatar>}
-                        title={dummy.nickname}/>
-                    </Card>
+                     ? <UserProfile/>
                     :
                     <LoginForm/>
                     }
                 </Col>
+                <Col xs={24} md={12}>
+                    {children}
+                </Col>
+                <Col xs={24} md={6}>
+                    <Link href="#"><a target="_blank">Made by mgw</a></Link>
+                </Col>
             </Row>
-            {children}
         </div>
     )
 };
