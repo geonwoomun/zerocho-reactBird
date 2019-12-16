@@ -1,10 +1,14 @@
 import React, { useState, useCallback } from "react";
 import { Form, Input, Button } from "antd";
 import Link from 'next/link';
+import { useDispatch } from 'react-redux';
+import { loginAction } from "../reducers/user";
 
 const LoginForm = () => {
   const [id, setId] = useState("");
   const [password, setPassword] = useState("");
+  const dispatch = useDispatch();
+  
   const onChangeId = useCallback(e => {
     setId(e.target.value);
   }, []);
@@ -14,10 +18,7 @@ const LoginForm = () => {
   const onSubmitForm = useCallback(
     e => {
       e.preventDefault();
-      console.log({
-        id,
-        password
-      });
+      dispatch(loginAction);
     },
     [id, password]
   ); // 자식 컴포넌트에 넘기는 함수는 useCallback 으로 감싸준다.

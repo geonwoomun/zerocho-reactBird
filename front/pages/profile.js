@@ -2,14 +2,6 @@ import React from "react";
 import { Button, List, Card, Icon } from 'antd';
 import NicknameEditForm from '../components/NicknameEditForm';
 
-const dummy = { // 서버로부터 아직 받은 데이터가 없기 때문에 가짜데이터를 만들어 놓자.
-  nickname : '문건우',
-  Post : [],
-  Followings : [],
-  Followers : [],
-  isLoggedIn : false,
-}
-
 const Profile = () => {
   return (
     <div>

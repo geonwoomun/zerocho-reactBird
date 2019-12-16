@@ -1,25 +1,28 @@
-import React from "react"; // next에서는 안 써도 되지만 useState 등을 사용하기 위해서 어차피 써야함.
+import React, { useEffect } from "react"; // next에서는 안 써도 되지만 useState 등을 사용하기 위해서 어차피 써야함.
 // 넥스트의 링크 기능
 // 라우터는 그냥 pages의 파일 구조만으로 자동으로 된다.
 import PostForm from '../components/PostForm';
 import PostCard from '../components/PostCard';
-const dummy = {
-    isLoggedIn : true,
-    imagePaths : [],
-    mainPosts : [{
-        User:{
-            id: 1,
-            nickname : '문건우',
-        },
-        content : '첫 번째 게시글',
-        img : 'https://i.pinimg.com/236x/ae/c9/ea/aec9eadd89aa51a9b753b221f3bcce12.jpg',
-    }],
-}
+import { useDispatch, useSelector } from 'react-redux';
+import { loginAction, logoutAction } from '../reducers/user';
+
 const Home = () => {
+    const dispatch = useDispatch();
+    const isLoggedIn = useSelector(state => state.user.isLoggedIn); // 잘게 쪼개는게 리렌더링을 최소화 할 수 있음.
+    const user = useSelector(state => state.user.user); // 너무 잘게 쪼개면 줄 수가 너무 많아지니깐 적당히......
+    const { mainPosts } = useSelector(state => state.post);
+
+    useEffect(() => {
+        dispatch(loginAction);
+        dispatch(logoutAction);
+        dispatch(loginAction);
+        dispatch(logoutAction);
+    }, [])
     return (
         <div>
-            {dummy.isLoggedIn && <PostForm/>}
-                {dummy.mainPosts.map((c) => {
+            {isLoggedIn ? <div>로그인 했습니다 : {user.nickname}</div> : <div>로그아웃 했습니다.</div>}
+            {isLoggedIn && <PostForm/>}
+                {mainPosts.map((c) => {
                     return (
                         <PostCard key={c} post={c}/>
                     )

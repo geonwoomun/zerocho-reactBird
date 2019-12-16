@@ -4,15 +4,10 @@ import PropTypes from 'prop-types';
 import { Menu, Input, Row, Col } from 'antd';
 import LoginForm from './LoginForm';
 import UserProfile from './UserProfile';
+import { useSelector } from 'react-redux';
 
-const dummy = { // 서버로부터 아직 받은 데이터가 없기 때문에 가짜데이터를 만들어 놓자.
-    nickname : '문건우',
-    Post : [],
-    Followings : [],
-    Followers : [],
-    isLoggedIn : false,
-}
 const AppLayout = ({children}) => { // props
+    const { isLoggedIn } = useSelector(state => state.user);
     return (
         <div>
             <Menu mode="horizontal">
@@ -24,7 +19,7 @@ const AppLayout = ({children}) => { // props
             </Menu>
             <Row gutter={8}>
                 <Col xs={24} md={6}>
-                    {dummy.isLoggedIn
+                    {isLoggedIn
                      ? <UserProfile/>
                     :
                     <LoginForm/>
