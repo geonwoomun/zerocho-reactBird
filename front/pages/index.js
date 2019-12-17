@@ -13,10 +13,6 @@ const Home = () => {
     const { mainPosts } = useSelector(state => state.post);
 
     useEffect(() => {
-        dispatch(loginAction);
-        dispatch(logoutAction);
-        dispatch(loginAction);
-        dispatch(logoutAction);
     }, [])
     return (
         <div>
