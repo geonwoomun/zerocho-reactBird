@@ -1,8 +1,8 @@
 import React, { useState, useCallback } from 'react';
 
 import { Form, Input, Checkbox, Button } from 'antd';
-import { signUpAction } from '../reducers/user';
-import { useDispatch } from 'react-redux';
+import { SIGN_UP_REQUEST } from '../reducers/user';
+import { useDispatch, useSelector } from 'react-redux';
 
 const Signup = () => {
     const [id, setId] = useState('');
@@ -12,6 +12,7 @@ const Signup = () => {
     const [term, setTerm] = useState(false);
     const [passwordError, setPasswordError] = useState(false);
     const [termError, setTermError] = useState(false);
+    const { isSigningUp } = useSelector(state => state.user);
     const dispatch = useDispatch();
 
     const onSubmit = useCallback((e) => {
@@ -22,11 +23,13 @@ const Signup = () => {
         if (!term){
             return setTermError(true);
         }
-        dispatch(signUpAction({
+        dispatch({
+            type : SIGN_UP_REQUEST,
+            data :{
             id,
             password,
             nick
-        }));
+        }});
     }, [password, passwordCheck, term]); // [] 안에 있는 dependencies들이 바뀔 때 다시 생성.
     const onChangeId = useCallback((e) => {
         setId(e.target.value);
@@ -74,7 +77,7 @@ const Signup = () => {
                     {termError && <div style = {{color : 'red'}}>약관에 동의하셔야합니다.</div>}
                 </div>
                 <div style={{marginTop : 10}}>
-                    <Button type="primary" htmlType="submit">가입하기</Button>
+                    <Button type="primary" htmlType="submit" loading={isSigningUp}>가입하기</Button>
                 </div>
             </Form>
     </>

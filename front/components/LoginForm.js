@@ -1,12 +1,13 @@
 import React, { useState, useCallback } from "react";
 import { Form, Input, Button } from "antd";
 import Link from 'next/link';
-import { useDispatch } from 'react-redux';
-import { loginAction } from "../reducers/user";
+import { useDispatch, useSelector } from 'react-redux';
+import { LOG_IN_REQUEST } from "../reducers/user";
 
 const LoginForm = () => {
   const [id, setId] = useState("");
   const [password, setPassword] = useState("");
+  const { isLoggingIn } = useSelector(state => state.user);
   const dispatch = useDispatch();
   
   const onChangeId = useCallback(e => {
@@ -18,7 +19,12 @@ const LoginForm = () => {
   const onSubmitForm = useCallback(
     e => {
       e.preventDefault();
-      dispatch(loginAction);
+      dispatch({
+        type: LOG_IN_REQUEST,
+        data : {
+          id, password
+        }
+      });
     },
     [id, password]
   ); // 자식 컴포넌트에 넘기는 함수는 useCallback 으로 감싸준다.
@@ -42,7 +48,7 @@ const LoginForm = () => {
         />
       </div>
       <div style ={{marginTop: '10px'}}>
-        <Button type="primary" htmlType="submit" loading={false}>
+        <Button type="primary" htmlType="submit" loading={isLoggingIn}>
           로그인
         </Button>
         <Link href="/signup">
