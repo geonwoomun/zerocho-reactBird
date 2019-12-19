@@ -30,7 +30,6 @@ function* signUp() {
     try {
         // yield call(signUpAPI); // 서버에 요청을 보내고 응답 받아야하니깐 call을 동기로 해야 기다림.
         yield delay(2000);
-        throw new Error("에러에러에러");
         yield put({ // put은 dispatch랑 동일. 성공했을 때
             type: SIGN_UP_SUCCESS
         });
