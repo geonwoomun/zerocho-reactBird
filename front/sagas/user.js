@@ -2,17 +2,19 @@ import { all, fork, delay, takeLatest,takeEvery, call, put, take } from 'redux-s
 import axios from 'axios';
 import {  LOG_OUT_REQUEST, LOG_IN_SUCCESS, LOG_IN_FAILURE, LOG_IN_REQUEST, SIGN_UP_REQUEST, SIGN_UP_SUCCESS, SIGN_UP_FAILURE } from '../reducers/user';
 
-function loginAPI() {
+axios.defaults.baseURL = "http://localhost:3065/api";
+
+function loginAPI(loginData) {
     // 서버에 요청을 보내는 부분분
-    return axios.post('/login');
+    return axios.post('/user/login', loginData);
 }
 
-function* login() {
+function* login(action) {
     try {
-        // yield call(loginAPI); // 서버에 요청을 보내고 응답 받아야하니깐 call을 동기로 해야 기다림.
-        yield delay(2000);
+        const result = yield call(loginAPI, action.data); // 서버에 요청을 보내고 응답 받아야하니깐 call을 동기로 해야 기다림.
         yield put({ // put은 dispatch랑 동일. 성공했을 때
-            type: LOG_IN_SUCCESS
+            type: LOG_IN_SUCCESS,
+            data : result.data,
         });
     } catch (e) { //loginAPI  에러 떴을 때
         console.error(e);
@@ -22,14 +24,14 @@ function* login() {
     }
 }
 
-function signUpAPI() {
+function signUpAPI(signUpData) {
     // 서버에 요청을 보내는 부분분
+    return axios.post('/user/', signUpData);
 }
 
-function* signUp() {
+function* signUp(action) {
     try {
-        // yield call(signUpAPI); // 서버에 요청을 보내고 응답 받아야하니깐 call을 동기로 해야 기다림.
-        yield delay(2000);
+        yield call(signUpAPI, action.data); // 서버에 요청을 보내고 응답 받아야하니깐 call을 동기로 해야 기다림.
         yield put({ // put은 dispatch랑 동일. 성공했을 때
             type: SIGN_UP_SUCCESS
         });

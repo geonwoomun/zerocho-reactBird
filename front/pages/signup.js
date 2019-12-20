@@ -34,11 +34,11 @@ const Signup = () => {
         dispatch({
             type : SIGN_UP_REQUEST,
             data :{
-            id,
+            userId : id,
             password,
-            nick
+            nickname : nick,
         }});
-    }, [password, passwordCheck, term]); // [] 안에 있는 dependencies들이 바뀔 때 다시 생성.
+    }, [id, nick, password, passwordCheck, term]); // [] 안에 있는 dependencies들이 바뀔 때 다시 생성.
     const onChangeId = useCallback((e) => {
         setId(e.target.value);
     },[])
