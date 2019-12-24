@@ -5,7 +5,13 @@ const passport = require('passport');
 const bcrypt = require('bcrypt');
 
 router.get('/', (req, res) => {
-
+    console.log('여기입니다',req.user);
+    if (!req.user) {
+        return res.status(401).send('로그인이 필요합니다.');
+    }
+    const user = Object.assign({}, req.user.toJSON());
+    delete user.password
+    return res.json(user);
 });
 router.post('/', async (req, res, next) => {
     try{
@@ -49,14 +55,34 @@ router.post('/login', (req, res, next) => { // POST /api/user/login
         if (info) {
             return res.status(401).send(info.reason);
         }
-        return req.login(user, (loginErr) => { // login 하면 session, cookie로 정보 저장.
-            if (loginErr) {
-                return next(loginErr);
+        return req.login(user, async (loginErr) => { // login 하면 session, cookie로 정보 저장.
+            try {
+                if (loginErr) {
+                    return next(loginErr);
+                }
+                const fullUser = await db.User.findOne({
+                    where : { id : user.id},
+                    include : [{
+                        model : db.Post,
+                        as : 'Posts',
+                        attributes: ['id'],
+                    }, {
+                        model: db.User,
+                        as : 'Followings',
+                        attributes: ['id'],
+                    },{
+                        model :db.User,
+                        as : 'Followers',
+                        attributes : ['id'],
+                    }],
+                    attributes: ['id', 'nickname', 'userId'],
+                })
+                console.log(fullUser)
+                return res.json(fullUser); // 비밀번호를 지운 정보를 프론트쪽으로 보낸다.
             }
-            console.log('login success', req.user);
-            const filteredUser = Object.assign({}, user.toJSON());
-            delete filteredUser.password;
-            return res.json(filteredUser); // 비밀번호를 지운 정보를 프론트쪽으로 보낸다.
+            catch (e) {
+                next(e);
+            }
         });
     })(req, res, next)
 });

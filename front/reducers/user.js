@@ -6,7 +6,6 @@ const dummyUser = {
     id : 1,
 }
 export const initialState = {
-    isLoggedIn : false,
     isLoggingOut : false, // 로그아웃 시도중
     isLoggingIn : false, // 로그인 시도중
     logInErrorReason : '', // 로그인 실패 사유
@@ -59,7 +58,6 @@ const reducer = (state = initialState, action) => {
         case LOG_IN_REQUEST :{
             return {
                 ...state,
-                isLoggingIn : true,
                 logInErrorReason : ''
             };
         }
@@ -67,7 +65,6 @@ const reducer = (state = initialState, action) => {
             return {
                 ...state,
                 isLoggingIn : false,
-                isLoggedIn : true,
                 me : action.data,
                 isLoading : false,
             }
@@ -75,8 +72,6 @@ const reducer = (state = initialState, action) => {
         case LOG_IN_FAILURE : {
             return {
                 ...state,
-                isLoggedIn : false,
-                isLoggedIn : false,
                 logInErrorReason : action.error,
                 me : null,
             };
@@ -84,9 +79,18 @@ const reducer = (state = initialState, action) => {
         case LOG_OUT_REQUEST : {
             return {
                 ...state,
-                isLoggedIn : false,
-                user : null,
+                isLoggingOut : true
             };
+        }
+        case LOG_OUT_SUCCESS :{
+            return {
+                ...state,
+                isLoggingOut : false,
+                me : null,
+            }
+        }
+        case LOG_OUT_FAILURE :{
+            return state;
         }
         case SIGN_UP_REQUEST : {
             return {
@@ -109,6 +113,20 @@ const reducer = (state = initialState, action) => {
                 isSigningUp : false,
                 signUpErrorReason : action.error,
             };
+        };
+        case LOAD_USER_REQUEST : {
+            return {
+                ...state,
+            };
+        }
+        case LOAD_USER_SUCCESS : {
+            return {
+                ...state,
+                me : action.data,
+            };
+        };
+        case LOAD_USER_FAILURE : {
+            return state;
         };
         default :
             return {

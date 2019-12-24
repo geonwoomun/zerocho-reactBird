@@ -15,9 +15,23 @@ module.exports = () => {
     passport.deserializeUser(async (id, done) => {
         try {
             const user = await db.User.findOne({
-                where : {id},   // 프론트에서 쿠키를 보내오면 그 쿠키에 연결된 아이디로 유저정보를 
+                // 프론트에서 쿠키를 보내오면 그 쿠키에 연결된 아이디로 유저정보를 
                 //db에서 다시 찾아서 옴.
-            });
+                where : {id},
+                    include : [{
+                        model : db.Post,
+                        as : 'Posts',
+                        attributes: ['id'],
+                    }, {
+                        model: db.User,
+                        as : 'Followings',
+                        attributes: ['id'],
+                    },{
+                        model :db.User,
+                        as : 'Followers',
+                        attributes : ['id'],
+                    }],
+                });
             return done(null, user); // req.user에 저장.
         }catch(e) {
             console.error(e);

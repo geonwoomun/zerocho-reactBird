@@ -5,24 +5,27 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import PostForm from '../components/PostForm';
 import PostCard from '../components/PostCard';
+import { LOAD_MAIN_POSTS_REQUEST } from "../reducers/post";
 
 
 const Home = () => {
-    const dispatch = useDispatch();
-    const isLoggedIn = useSelector(state => state.user.isLoggedIn); // 잘게 쪼개는게 리렌더링을 최소화 할 수 있음.
     const me = useSelector(state => state.user.me); // 너무 잘게 쪼개면 줄 수가 너무 많아지니깐 적당히......
     const { mainPosts } = useSelector(state => state.post);
+    const dispatch = useDispatch();
 
     useEffect(() => {
-    }, [])
+        dispatch({
+            type: LOAD_MAIN_POSTS_REQUEST,
+        })
+    }, []);
     return (
         <div>
-            {isLoggedIn ? <div>로그인 했습니다 : {me.nickname}</div> : <div>로그아웃 했습니다.</div>}
-            {isLoggedIn && <PostForm/>}
-                {mainPosts.map((c) =>(
-                        <PostCard key={c} post={c}/>
-                    )
-                )}
+            {me ? <div>로그인 했습니다 : {me.nickname}</div> : <div>로그아웃 했습니다.</div>}
+            {me && <PostForm/>}
+            {mainPosts.map((c) =>(
+                    <PostCard key={c.id} post={c}/>
+                )
+            )}
         </div>
     );
 };

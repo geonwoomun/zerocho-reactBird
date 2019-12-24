@@ -19,11 +19,11 @@ module.exports = ( sequelize, DataTypes ) => {
     });
 
     User.associate = (db) => {
-        db.User.hasMany(db.Post, { as: 'Post'}); // 관계가 불분명 할 때 as로 잘 정해줘야함.
+        db.User.hasMany(db.Post, { as: 'Posts'}); // 관계가 불분명 할 때 as로 잘 정해줘야함.
         db.User.hasMany(db.Comment);
         db.User.belongsToMany(db.Post, { through : 'Like', as : 'Liked'});
-        db.User.belongsToMany(db.User, { through : 'Follow', as : 'Followers'});
-        db.User.belongsToMany(db.User, { through : 'Follow', as : 'Followings'});
+        db.User.belongsToMany(db.User, { through : 'Follow', as : 'Followers', foreignKey : 'followingId'});
+        db.User.belongsToMany(db.User, { through : 'Follow', as : 'Followings', foreignKey: 'followerId'});
     };
     // through 중간 테이블 명(관계 테이블) 
     // sequelize가 알아서 key를 만들어준다.4

@@ -24,7 +24,10 @@ passportConfig();
 // API는 다른 서비스가 내 서비스의 기능을 실행할 수 있게 열어둔 창구.
 
 app.use(morgan('dev'));  // 로그 찍어주는 설정.
-app.use(cors());
+app.use(cors({
+    origin: true,
+    credentials : true,
+}));
 app.use(express.json()); // json 형식 처리
 app.use(express.urlencoded({ extended : true })); // form으로 넘어온 데이터 처리
 // req.body 정상적으로 동작하게 해줌.
@@ -33,10 +36,11 @@ app.use(expressSession({
     resave : false,
     saveUninitialized : false,
     secret : process.env.COOKIE_SECRET,
-    cokkie : {
+    cookie : {
         httpOnly : true, // 쿠키를 자바스크립트에서 접근 못함. 
         secure : false, // https를 쓸 때 true로
     },
+    name : 'rbck',
 }))
 
 app.use(passport.initialize());
