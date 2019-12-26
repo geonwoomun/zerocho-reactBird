@@ -22,3 +22,5 @@ router.get('/:tag', async (req, res, next) => {
     }
 
 })
+
+module.exports = router;
