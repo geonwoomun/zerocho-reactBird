@@ -3,6 +3,7 @@ import { Button, Avatar, Card, Icon, Input, Form, List, Comment } from "antd";
 import PropTypes from "prop-types";
 import { useSelector, useDispatch } from "react-redux";
 import { ADD_COMMENT_REQUEST } from "../reducers/post";
+import Link from "next/link";
 
 const PostCard = ({ post }) => {
   const [commentFormOpend, setCommentFormOpend] = useState(false);
@@ -52,7 +53,14 @@ const PostCard = ({ post }) => {
         <Card.Meta
           avatar={<Avatar>{post.User.nickname[0]}</Avatar>}
           title={post.User.nickname}
-          description={post.content}
+          description={<div>{post.content.split(/(#[^\s]+)/g).map((v) => {
+            if (v.match(/#[^\s]+/)) {
+              return (
+                <Link href="/hashtag" key={v}><a>{v}</a></Link>
+              )
+            }
+            return v;
+          })}</div>} // a tag x -> Link 태크로 바꿔주기. next에서는 a tag 쓰지말고 link로 해야 spa가 유지된다.
         />
       </Card>
         {commentFormOpend && (

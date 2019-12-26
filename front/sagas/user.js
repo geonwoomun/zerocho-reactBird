@@ -3,19 +3,20 @@ import axios from 'axios';
 import {  LOG_OUT_REQUEST, LOG_IN_SUCCESS, LOG_IN_FAILURE, LOG_IN_REQUEST, SIGN_UP_REQUEST, SIGN_UP_SUCCESS, SIGN_UP_FAILURE,
 LOAD_USER_FAILURE, LOAD_USER_REQUEST, LOAD_USER_SUCCESS } from '../reducers/user';
 
-function loadUserAPI() {
+function loadUserAPI(userId) {
     // 서버에 요청을 보내는 부분분
-    return axios.get('/user',  {
+    return axios.get(userId ? `/user/${userId}`:'/user',  {
         withCredentials: true,
     });
 }
 
-function* loadUser() {
+function* loadUser(action) {
     try {
-        const result = yield call(loadUserAPI); // 서버에 요청을 보내고 응답 받아야하니깐 call을 동기로 해야 기다림.
+        const result = yield call(loadUserAPI, action.data); // 서버에 요청을 보내고 응답 받아야하니깐 call을 동기로 해야 기다림.
         yield put({ // put은 dispatch랑 동일. 성공했을 때
             type: LOAD_USER_SUCCESS,
-            data : result.data
+            data : result.data,
+            me : !action.data,
         });
     } catch (e) { //loginAPI  에러 떴을 때
         console.error(e);
