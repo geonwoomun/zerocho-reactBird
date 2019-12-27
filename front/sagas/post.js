@@ -3,19 +3,24 @@ import { ADD_POST_REQUEST, ADD_POST_SUCCESS, ADD_POST_FAILURE,
     ADD_COMMENT_REQUEST, ADD_COMMENT_SUCCESS, ADD_COMMENT_FAILURE,
 LOAD_MAIN_POSTS_FAILURE, LOAD_MAIN_POSTS_REQUEST, LOAD_MAIN_POSTS_SUCCESS,
 LOAD_USER_POSTS_FAILURE, LOAD_USER_POSTS_REQUEST, LOAD_USER_POSTS_SUCCESS,
-LOAD_HASHTAG_POSTS_FAILURE, LOAD_HASHTAG_POSTS_REQUEST, LOAD_HASHTAG_POSTS_SUCCESS } from '../reducers/post';
+LOAD_HASHTAG_POSTS_FAILURE, LOAD_HASHTAG_POSTS_REQUEST, LOAD_HASHTAG_POSTS_SUCCESS,
+LOAD_COMMENTS_FAILURE, LOAD_COMMENTS_REQUEST, LOAD_COMMENTS_SUCCESS,
+UPLOAD_IMAGES_FAILURE, UPLOAD_IMAGES_REQUEST, UPLOAD_IMAGES_SUCCESS } from '../reducers/post';
 import axios from 'axios';
 
-function addCommentApi() {
-
+function addCommentApi(data) {
+    return axios.post(`/post/${data.postId}/comment`, {content : data.content}, {
+        withCredentials : true,
+    });
 }
 function* addComment(action) {
     try {
-        yield delay(2000);
+        const result = yield call(addCommentApi, action.data);
         yield put({
             type: ADD_COMMENT_SUCCESS,
             data : {
                 postId : action.data.postId,
+                comment : result.data,
             },
         });
     }
@@ -29,6 +34,32 @@ function* addComment(action) {
 
 function* watchAddComment() {
     yield takeLatest(ADD_COMMENT_REQUEST, addComment);
+}
+
+function loadCommentsApi(postId) {
+    return axios.get(`/post/${postId}/comments`);
+}
+function* loadComments(action) {
+    try {
+        const result = yield call(loadCommentsApi, action.data);
+        yield put({
+            type: LOAD_COMMENTS_SUCCESS,
+            data : {
+                postId : action.data,
+                comments : result.data,
+            },
+        });
+    }
+    catch(e) {
+        yield put({
+            type : LOAD_COMMENTS_FAILURE,
+            error : e
+        })
+    }
+}
+
+function* watchLoadComments() {
+    yield takeLatest(LOAD_COMMENTS_REQUEST, loadComments);
 }
 function addPostAPI(postData) {
     return axios.post('/post', postData,{
@@ -124,12 +155,39 @@ function* loadUserPosts(action) {
 function* watchLoadUserPosts() {
     yield takeLatest(LOAD_USER_POSTS_REQUEST, loadUserPosts);
 }
+
+function uploadImagesAPI(formdata) {
+    return axios.post(`/post/images`, formdata, {
+        withCredentials : true,
+    });
+}
+function* uploadImages(action) {
+    try {
+        const result = yield call(uploadImagesAPI, action.data);
+        yield put({
+            type: UPLOAD_IMAGES_SUCCESS,
+            data : result.data,
+        });
+    }
+    catch(e) {
+        yield put({
+            type : UPLOAD_IMAGES_FAILURE,
+            error : e
+        })
+    }
+}
+
+function* watchUploadImages() {
+    yield takeLatest(UPLOAD_IMAGES_REQUEST, uploadImages);
+}
 export default function* postSaga() {
     yield all([
         fork(watchAddPost),
         fork(watchMainLoadPosts),
         fork(watchAddComment),
+        fork(watchLoadComments),
         fork(watchLoadHashtagPosts),
         fork(watchLoadUserPosts),
+        fork(watchUploadImages),
     ])
 }

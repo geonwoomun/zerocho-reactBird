@@ -2,7 +2,7 @@ import React, { useState, useCallback, useEffect } from "react";
 import { Button, Avatar, Card, Icon, Input, Form, List, Comment } from "antd";
 import PropTypes from "prop-types";
 import { useSelector, useDispatch } from "react-redux";
-import { ADD_COMMENT_REQUEST } from "../reducers/post";
+import { ADD_COMMENT_REQUEST, LOAD_COMMENTS_REQUEST } from "../reducers/post";
 import Link from "next/link";
 
 const PostCard = ({ post }) => {
@@ -14,6 +14,12 @@ const PostCard = ({ post }) => {
 
   const onToggleComment = useCallback(() => {
     setCommentFormOpend(prev => !prev);
+    if(!commentFormOpend) {
+      dispatch({
+        type: LOAD_COMMENTS_REQUEST,
+        data : post.id,
+      })
+    }
   }, []);
 
   const onSubmitComment = useCallback((e) => {
@@ -21,14 +27,15 @@ const PostCard = ({ post }) => {
     if (!me) {
       return alert('로그인이 필요합니다.');
     }
-    setCommentText('');
-    return dispatch({
+    dispatch({
       type: ADD_COMMENT_REQUEST,
       data : {
         postId : post.id,
+        content : commentText,
       }
     })
-  }, [me && me.id]);
+    setCommentText('');
+  }, [me && me.id, commentText]);
 
   useEffect(() => {
     setCommentText('');
@@ -40,7 +47,7 @@ const PostCard = ({ post }) => {
   return (
     <div>
       <Card
-        key={+post.createCat}
+        key={post.id}
         cover={post.img && <img alt="example" src={post.img} />}
         actions={[
           <Icon type="retweet" key="retweet" />,
@@ -50,13 +57,13 @@ const PostCard = ({ post }) => {
         ]}
         extra={<Button>팔로우</Button>}
       >
-        <Card.Meta
-          avatar={<Avatar>{post.User.nickname[0]}</Avatar>}
+        <Card.Meta // 서버 주소라서 새로고침하게된다. 밑에처럼 프론트에서 처리할 수 있게 바꿔줘야함.
+          avatar={<Link href={{pathname: '/user', query : {id: post.User.id}}} as={`/user/${post.User.id}`}><a><Avatar>{post.User.nickname[0]}</Avatar></a></Link>}
           title={post.User.nickname}
           description={<div>{post.content.split(/(#[^\s]+)/g).map((v) => {
             if (v.match(/#[^\s]+/)) {
               return (
-                <Link href="/hashtag" key={v}><a>{v}</a></Link>
+                <Link href={{pathname: '/hashtag', query : {tag : v.slice(1)}}} as={`/hashtag/${v.slice(1)}`} key={v}><a>{v}</a></Link>
               )
             }
             return v;
@@ -79,7 +86,7 @@ const PostCard = ({ post }) => {
               <li>
                 <Comment 
                 author ={item.User.nickname}
-                avatar={<Avatar>{item.User.nickname[0]}</Avatar>}
+                avatar={<Link href={{pathname : '/user', query : {id: item.User.id}}} as={`/user/${item.User.id}`}><a><Avatar>{item.User.nickname[0]}</Avatar></a></Link>}
                 content ={item.content}
                />
               </li>
@@ -92,10 +99,11 @@ const PostCard = ({ post }) => {
 
 PostCard.propTypes = {
   post: PropTypes.shape({
+    id : PropTypes.number,
     User: PropTypes.object,
     content: PropTypes.string,
     img: PropTypes.string,
-    createdAt: PropTypes.object
-  })
+    createdAt: PropTypes.string,
+  }).isRequired,
 };
 export default PostCard;

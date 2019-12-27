@@ -3,12 +3,9 @@ const router = express.Router();
 const db = require('../models');
 const passport = require('passport');
 const bcrypt = require('bcrypt');
+const {isLoggedIn} = require('./middleware');
 
-router.get('/', (req, res) => {
-    console.log('여기입니다',req.user);
-    if (!req.user) {
-        return res.status(401).send('로그인이 필요합니다.');
-    }
+router.get('/', isLoggedIn, (req, res) => {
     const user = Object.assign({}, req.user.toJSON());
     delete user.password
     return res.json(user);
@@ -63,7 +60,7 @@ router.get('/:id', async (req, res, next) => { // 남의 정보 가져오는 것
         jsonUser.Posts = jsonUser.Posts ? jsonUser.Posts.length : 0;
         jsonUser.Followings = jsonUser.Followings ? jsonUser.Followings.length : 0;
         jsonUser.Followers = jsonUser.Followers ? jsonUser.Followers.length : 0;
-        res.json(user);
+        res.json(jsonUser);
     } catch(e) {
         console.err(e);
         next(e);
