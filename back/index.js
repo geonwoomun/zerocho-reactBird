@@ -24,6 +24,7 @@ passportConfig();
 // API는 다른 서비스가 내 서비스의 기능을 실행할 수 있게 열어둔 창구.
 
 app.use(morgan('dev'));  // 로그 찍어주는 설정.
+app.use('/',express.static('uploads')); // 경로를 지정해주면 그 안에 들어있는 파일들을 다른 서버에서 자유롭게 가져갈 수 있게 해줌.
 app.use(cors({
     origin: true,
     credentials : true,
