@@ -1,7 +1,7 @@
 import { all, fork, delay, takeLatest,takeEvery, call, put, take } from 'redux-saga/effects';
 import axios from 'axios';
 import {  LOG_OUT_REQUEST, LOG_IN_SUCCESS, LOG_IN_FAILURE, LOG_IN_REQUEST, SIGN_UP_REQUEST, SIGN_UP_SUCCESS, SIGN_UP_FAILURE,
-LOAD_USER_FAILURE, LOAD_USER_REQUEST, LOAD_USER_SUCCESS, LOG_OUT_FAILURE, LOG_OUT_SUCCESS } from '../reducers/user';
+LOAD_USER_FAILURE, LOAD_USER_REQUEST, LOAD_USER_SUCCESS, LOG_OUT_FAILURE, LOG_OUT_SUCCESS, UNFOLLOW_USER_FAILURE, FOLLOW_USER_SUCCESS, FOLLOW_USER_FAILURE, UNFOLLOW_USER_SUCCESS, FOLLOW_USER_REQUEST } from '../reducers/user';
 
 function loadUserAPI(userId) {
     // 서버에 요청을 보내는 부분분
@@ -109,11 +109,70 @@ function* watchSignUp() {
     yield takeEvery(SIGN_UP_REQUEST, signUp)
 }
 
+function followAPI(userId) {
+    // 서버에 요청을 보내는 부분분
+    return axios.post(`/user/${userId}/follow`, {}, {
+        withCredentials : true,
+    });
+}
+
+function* follow(action) {
+    try {
+        const result = yield call(followAPI, action.data); 
+        yield put({ 
+            type: FOLLOW_USER_SUCCESS,
+            data : result.data,
+        });
+    } catch (e) { 
+        console.error(e);
+        yield put({
+            type: FOLLOW_USER_FAILURE,
+            error : e
+        })
+    }
+}
+
+function* watchFollow() {
+    yield takeEvery(FOLLOW_USER_REQUEST, follow)
+}
+
+function unfollowAPI(userId) {
+    // 서버에 요청을 보내는 부분분
+    return axios.delete(`/user/${userId}/follow`, {
+        withCredentials : true,
+    });
+}
+
+function* unfollow(action) {
+    try {
+        const result = yield call(unfollowAPI, action.data); 
+        yield put({ 
+            type: UNFOLLOW_USER_SUCCESS,
+            data : result.data,
+        });
+    } catch (e) { 
+        console.error(e);
+        yield put({
+            type: UNFOLLOW_USER_FAILURE,
+            error : e
+        })
+    }
+}
+
+function* watchUnfollow() {
+    yield takeEvery(UNFOLLOW_USER_REQUEST, unfollow)
+}
+
+
+
+
 export default function* userSaga() {
     yield all([ //call fork는 둘다 함수를 실행해줌. call 동기호출 fork 비동기 호출출
         fork(watchLogIn), // 많은 액션들 사이에 순서가 없다. 사용자의 이벤트 클릭에 따라 작동.
         fork(watchLogOut),
         fork(watchLoadUser),
-        fork(watchSignUp)  // 순서가 의미가 없으니깐 fork
+        fork(watchSignUp),
+        fork(watchFollow),
+        fork(watchUnfollow)  // 순서가 의미가 없으니깐 fork
     ]); // 사용자에 관한 리덕스 액션이 여러개면 all로 묶어서 다 넣어줘야함.
 }
