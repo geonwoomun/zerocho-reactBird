@@ -66,7 +66,7 @@ router.get('/:id', async (req, res, next) => { // 남의 정보 가져오는 것
         next(e);
     }
 });
-router.post('/logout', (req, res) => { // /api/user/logout
+router.post('/logout', isLoggedIn, (req, res) => { // /api/user/logout
     req.logout();
     req.session.destroy();
     res.send('logout 성공');
@@ -135,6 +135,11 @@ router.get('/:id/posts', async (req, res) => {
                 attributes: ['id', 'nickname']
             }, {
                 model: db.Image,
+            },{
+                model: db.User,
+                through : 'Like',
+                as: 'Likers',
+                attributes : ['id'],
             }]
         });
         res.json(posts);

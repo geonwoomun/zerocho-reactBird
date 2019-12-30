@@ -1,7 +1,7 @@
 import { all, fork, delay, takeLatest,takeEvery, call, put, take } from 'redux-saga/effects';
 import axios from 'axios';
 import {  LOG_OUT_REQUEST, LOG_IN_SUCCESS, LOG_IN_FAILURE, LOG_IN_REQUEST, SIGN_UP_REQUEST, SIGN_UP_SUCCESS, SIGN_UP_FAILURE,
-LOAD_USER_FAILURE, LOAD_USER_REQUEST, LOAD_USER_SUCCESS } from '../reducers/user';
+LOAD_USER_FAILURE, LOAD_USER_REQUEST, LOAD_USER_SUCCESS, LOG_OUT_FAILURE, LOG_OUT_SUCCESS } from '../reducers/user';
 
 function loadUserAPI(userId) {
     // 서버에 요청을 보내는 부분분
