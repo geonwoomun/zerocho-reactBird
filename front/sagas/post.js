@@ -6,6 +6,7 @@ LOAD_USER_POSTS_FAILURE, LOAD_USER_POSTS_REQUEST, LOAD_USER_POSTS_SUCCESS,
 LOAD_HASHTAG_POSTS_FAILURE, LOAD_HASHTAG_POSTS_REQUEST, LOAD_HASHTAG_POSTS_SUCCESS,
 LOAD_COMMENTS_FAILURE, LOAD_COMMENTS_REQUEST, LOAD_COMMENTS_SUCCESS,
 UPLOAD_IMAGES_FAILURE, UPLOAD_IMAGES_REQUEST, UPLOAD_IMAGES_SUCCESS, LIKE_POST_FAILURE, LIKE_POST_REQUEST, LIKE_POST_SUCCESS, UNLIKE_POST_REQUEST, UNLIKE_POST_FAILURE, UNLIKE_POST_SUCCESS, RETWEET_REQUEST, RETWEET_FAILURE, RETWEET_SUCCESS } from '../reducers/post';
+import { ADD_POST_TO_ME } from '../reducers/user';
 import axios from 'axios';
 
 function addCommentApi(data) {
@@ -69,10 +70,14 @@ function addPostAPI(postData) {
 function* addPost(action) {
     try {
         const result = yield call(addPostAPI, action.data);
-        yield put({
+        yield put({ // post reducer의 데이터를 수정.
             type: ADD_POST_SUCCESS,
             data : result.data,
         });
+        yield put({ // user reducer의 데이터를 수정
+            type : ADD_POST_TO_ME,
+            data : result.data.id,
+        })
     }
     catch(e) {
         console.error(e);

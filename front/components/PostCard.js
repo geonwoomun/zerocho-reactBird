@@ -12,6 +12,7 @@ import {
 import Link from "next/link";
 import PostImages from "./PostImages";
 import PostCardContent from "./PostCardContent";
+import { FOLLOW_USER_REQUEST, UNFOLLOW_USER_REQUEST } from "../reducers/user";
 
 const PostCard = ({ post }) => {
   const [commentFormOpend, setCommentFormOpend] = useState(false);
