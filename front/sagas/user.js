@@ -1,7 +1,7 @@
 import { all, fork, delay, takeLatest,takeEvery, call, put, take } from 'redux-saga/effects';
 import axios from 'axios';
 import {  LOG_OUT_REQUEST, LOG_IN_SUCCESS, LOG_IN_FAILURE, LOG_IN_REQUEST, SIGN_UP_REQUEST, SIGN_UP_SUCCESS, SIGN_UP_FAILURE,
-LOAD_USER_FAILURE, LOAD_USER_REQUEST, LOAD_USER_SUCCESS, LOG_OUT_FAILURE, LOG_OUT_SUCCESS, UNFOLLOW_USER_FAILURE, FOLLOW_USER_SUCCESS, FOLLOW_USER_FAILURE, UNFOLLOW_USER_SUCCESS, UNFOLLOW_USER_REQUEST,FOLLOW_USER_REQUEST, LOAD_FOLLOWERS_SUCCESS, LOAD_FOLLOWERS_FAILURE, LOAD_FOLLOWERS_REQUEST, LOAD_FOLLOWINGS_REQUEST, LOAD_FOLLOWINGS_FAILURE, LOAD_FOLLOWINGS_SUCCESS, REMOVE_FOLLOWER_REQUEST, REMOVE_FOLLOWER_FAILURE, REMOVE_FOLLOWER_SUCCESS } from '../reducers/user';
+LOAD_USER_FAILURE, LOAD_USER_REQUEST, LOAD_USER_SUCCESS, LOG_OUT_FAILURE, LOG_OUT_SUCCESS, UNFOLLOW_USER_FAILURE, FOLLOW_USER_SUCCESS, FOLLOW_USER_FAILURE, UNFOLLOW_USER_SUCCESS, UNFOLLOW_USER_REQUEST,FOLLOW_USER_REQUEST, LOAD_FOLLOWERS_SUCCESS, LOAD_FOLLOWERS_FAILURE, LOAD_FOLLOWERS_REQUEST, LOAD_FOLLOWINGS_REQUEST, LOAD_FOLLOWINGS_FAILURE, LOAD_FOLLOWINGS_SUCCESS, REMOVE_FOLLOWER_REQUEST, REMOVE_FOLLOWER_FAILURE, REMOVE_FOLLOWER_SUCCESS, EDIT_NICKNAME_REQUEST, EDIT_NICKNAME_SUCCESS, EDIT_NICKNAME_FAILURE } from '../reducers/user';
 
 function loadUserAPI(userId) {
     // 서버에 요청을 보내는 부분분
@@ -245,6 +245,33 @@ function* watchRemoveFollower() {
     yield takeEvery(REMOVE_FOLLOWER_REQUEST,removeFollower)
 }
 
+function editNicknameAPI(nickname) {
+    // 서버에 요청을 보내는 부분분
+    return axios.patch(`/user/nickname`, { nickname }, {
+        withCredentials : true,
+    });
+}
+
+function* editNickname(action) {
+    try {
+        const result = yield call(editNicknameAPI, action.data); 
+        yield put({ 
+            type: EDIT_NICKNAME_SUCCESS,
+            data : result.data,
+        });
+    } catch (e) { 
+        console.error(e);
+        yield put({
+            type: EDIT_NICKNAME_FAILURE,
+            error : e
+        })
+    }
+}
+
+function* watchEditNickname() {
+    yield takeEvery(EDIT_NICKNAME_REQUEST,editNickname)
+}
+
 
 export default function* userSaga() {
     yield all([ //call fork는 둘다 함수를 실행해줌. call 동기호출 fork 비동기 호출출
@@ -257,7 +284,7 @@ export default function* userSaga() {
         fork(watchLoadFollowers),
         fork(watchLoadFollowings),
         fork(watchRemoveFollower),  
-        
+        fork(watchEditNickname),
         // 순서가 의미가 없으니깐 fork
     ]); // 사용자에 관한 리덕스 액션이 여러개면 all로 묶어서 다 넣어줘야함.
 }

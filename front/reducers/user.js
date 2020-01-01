@@ -1,10 +1,3 @@
-const dummyUser = {
-  nickname: "문건우",
-  Post: [],
-  Followings: [],
-  Followers: [],
-  id: 1
-};
 export const initialState = {
   isLoggingOut: false, // 로그아웃 시도중
   isLoggingIn: false, // 로그인 시도중
@@ -15,7 +8,9 @@ export const initialState = {
   me: null, // 내정보
   userInfo: null, // 남의 정보
   followingList: [], // 팔로잉 리스트
-  followerList: [] // 팔로워 리스트트
+  followerList: [],// 팔로워 리스트,
+  isEditingNickname : false, // 이름 변경 중
+  editNicknameErrorReason : '', // 이름 변경 실패 사유
 };
 export const SIGN_UP_REQUEST = "SIGN_UP_REQUEST";
 export const SIGN_UP_SUCCESS = "SIGN_UP_SUCCESS";
@@ -54,6 +49,10 @@ export const REMOVE_FOLLOWER_SUCCESS = "REMOVE_FOLLOWER_SUCCESS";
 export const REMOVE_FOLLOWER_FAILURE = "REMOVE_FOLLOWER_FAILURE";
 
 export const ADD_POST_TO_ME = "ADD_POST_TO_ME";
+
+export const EDIT_NICKNAME_REQUEST = "EDIT_NICKNAME_REQUEST";
+export const EDIT_NICKNAME_SUCCESS = "EDIT_NICKNAME_SUCCESS";
+export const EDIT_NICKNAME_FAILURE = "EDIT_NICKNAME_FAILURE";
 
 // 동기요청은 REQUEST, SUCCESS, FAILURE 필요없고
 
@@ -232,6 +231,30 @@ const reducer = (state = initialState, action) => {
     }
     case REMOVE_FOLLOWER_FAILURE: {
       return state;
+    }
+    case EDIT_NICKNAME_REQUEST: {
+      return {
+        ...state,
+        isEditingNickname : true,
+        editNicknameErrorReason : '',
+      };
+    }
+    case EDIT_NICKNAME_SUCCESS: {
+        return {
+          ...state,
+          isEditingNickname : false,
+          me: {
+              ...state.me,
+              nickname : action.data,
+        },
+      }
+    }
+    case EDIT_NICKNAME_FAILURE: {
+      return {
+        ...setupMaster,
+        isEditingNickname : false,
+        editNicknameErrorReason : action.error,
+      }
     }
     default:
       return {

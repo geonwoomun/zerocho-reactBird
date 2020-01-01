@@ -6,6 +6,7 @@ import AppLayout from '../components/AppLayout';
 import Head from 'next/head';
 import PropTypes from 'prop-types';
 import withRedux from 'next-redux-wrapper';
+import withReduxSaga from 'next-redux-saga';
 import { Provider } from 'react-redux';
 import reducer from '../reducers';
 import { createStore, compose, applyMiddleware } from 'redux';
@@ -43,14 +44,17 @@ ReactBird.getInitialProps = async (context) => { // next에서 제공하는 젤�
     } // 리턴 한 값이 pageProps에 담기고 다시 리턴 하면 ReactBird의 props로 담기고 컴포넌트에 props로 내려줌.
     return { pageProps };
 };
-export default withRedux((initialState, options )=> {
+const configureStore = (initialState, options) => {
     const sagaMiddleware = createSagaMiddleware();
     // 여기에다가 store 커스터마이징.
     const middlewares = [sagaMiddleware]; // 변조하거나 기능을 추가.
-    const enhancer = compose(applyMiddleware(...middlewares),
+    const enhancer = process.env.NODE_ENV === 'production' ? compose(applyMiddleware(...middlewares)) :
+    compose(applyMiddleware(...middlewares),
     typeof window !== 'undefined' && window.__REDUX_DEVTOOLS_EXTENSION__ !== 'undefined' ? window.__REDUX_DEVTOOLS_EXTENSION__() : 
-    (f) => f); // compose : 미들웨어끼리 합성,  applyMiddleware 미들웨어 적용
+    (f) => f);// compose : 미들웨어끼리 합성,  applyMiddleware 미들웨어 적용
     const store = createStore(reducer, initialState, enhancer);
-    sagaMiddleware.run(rootSaga); // 루트사가 연결
+    store.sagaTask = sagaMiddleware.run(rootSaga); // 루트사가 연결
     return store; // store를 props로 받을 수 있음.
-})(ReactBird);
+};
+
+export default withRedux(configureStore)(withReduxSaga(ReactBird));

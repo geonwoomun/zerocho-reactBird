@@ -13,11 +13,6 @@ const Home = () => {
     const { mainPosts } = useSelector(state => state.post);
     const dispatch = useDispatch();
 
-    useEffect(() => {
-        dispatch({
-            type: LOAD_MAIN_POSTS_REQUEST,
-        })
-    }, []);
     return (
         <div>
             {me ? <div>로그인 했습니다 : {me.nickname}</div> : <div>로그아웃 했습니다.</div>}
@@ -29,5 +24,11 @@ const Home = () => {
         </div>
     );
 };
+
+Home.getInitialProps = async (context) => {
+    context.store.dispatch({
+        type : LOAD_MAIN_POSTS_REQUEST,
+    })
+}
 
 export default Home;
