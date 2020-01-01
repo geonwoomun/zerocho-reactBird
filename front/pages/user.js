@@ -1,26 +1,17 @@
 import React, { useEffect } from "react";
 import PropTypes from "prop-types";
 import { LOAD_USER_POSTS_REQUEST } from "../reducers/post";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import { Avatar, Card } from "antd";
 import { LOAD_USER_REQUEST } from "../reducers/user";
 import PostCard from "../components/PostCard";
 
 const User = ({ id }) => {
-  const dispatch = useDispatch();
   const { mainPosts } = useSelector(state => state.post);
   const { userInfo } = useSelector(state => state.user);
   useEffect(() => {
     // 남의 정보 게시글을 가지고 와줘야함.
-    dispatch({
-      // 이렇게 되면 시작 할때 해당 액션들을 실행해서 위에 있는 userInfo, mainPosts 들의 state값이 변경됨.
-      type: LOAD_USER_REQUEST,
-      data: id
-    });
-    dispatch({
-      type: LOAD_USER_POSTS_REQUEST,
-      data: id
-    });
+    
   }, [id]);
   return (
     <div>
@@ -62,8 +53,20 @@ User.propTypes = {
 };
 
 User.getInitialProps = async context => {
-  console.log("hashtag getInitialProps", context.query.id);
-  return { id: parseInt(context.query.id, 10) }; // props로 내려줄 수 있음.
+  const id = parseInt(context.query.id);
+  console.log("hashtag getInitialProps", id);
+  context.store.dispatch({
+      // 이렇게 되면 시작 할때 해당 액션들을 실행해서 위에 있는 userInfo, mainPosts 들의 state값이 변경됨.
+      type: LOAD_USER_REQUEST,
+      data: id
+  });
+  context.store.dispatch({
+    // 이렇게 되면 시작 할때 해당 액션들을 실행해서 위에 있는 userInfo, mainPosts 들의 state값이 변경됨.
+    type: LOAD_USER_POSTS_REQUEST,
+    data: id
+});
+  
+  return { id }; // props로 내려줄 수 있음.
 };
 
 export default User;
