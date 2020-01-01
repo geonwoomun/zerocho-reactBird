@@ -18,7 +18,7 @@ const Signup = () => {
 
     useEffect(() => {
         if (me){
-            alert('로그인 했습니다.');
+            alert('로그인 했으니 메인페이지로 돌아갑니다.');
             Router.push('/');
         }
     },[me && me.id])
@@ -56,6 +56,10 @@ const Signup = () => {
         setTermError(false)
         setTerm(e.target.checked)
     },[]);
+
+    if (me) {
+        return null;
+    }
     return (
         <>
             <Form onSubmit={onSubmit} style={{padding : 10}}>

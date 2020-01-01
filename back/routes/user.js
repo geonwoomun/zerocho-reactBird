@@ -129,10 +129,12 @@ router.post('/:id/follow', isLoggedIn, async (req, res, next) => {
 router.get('/:id/followers', isLoggedIn, async (req, res, next) => {
     try {
        const user = await db.User.findOne({
-           where : {id : parseInt(req.params.id, 10)},
+           where : {id : parseInt(req.params.id, 10) || (req.user && req.user.id) || 0},
        });
        const followers = await user.getFollowers({
            attributes : ['id', 'nickname'],
+           limit : parseInt(req.query.limit, 10),
+           offset : parseInt(req.query.offset, 10)
        });
        res.json(followers);
     }catch(e) {
@@ -143,11 +145,12 @@ router.get('/:id/followers', isLoggedIn, async (req, res, next) => {
 router.get('/:id/followings', isLoggedIn, async (req, res, next) => {
     try {
         const user = await db.User.findOne({
-            where : {id : parseInt(req.params.id, 10) || 
-                (req,user && req.user.id) || 0}
+            where : {id : parseInt(req.params.id, 10) || (req.user && req.user.id) || 0},
         });
         const followers = await user.getFollowings({
             attributes : ['id', 'nickname'],
+            limit : parseInt(req.query.limit, 10),
+            offset : parseInt(req.query.offset, 10)
         });
         res.json(followers);
     }catch(e) {
@@ -183,7 +186,7 @@ router.get('/:id/posts', async (req, res, next) => {
     try {
         const posts = await db.Post.findAll({
             where : {
-                UserId : parseInt(req.params.id, 10) || (req,user && req.user.id) || 0,
+                UserId : parseInt(req.params.id, 10) || (req.user && req.user.id) || 0,
                 RetweetId : null,
             },
             include: [{
