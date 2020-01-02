@@ -1,4 +1,4 @@
-import { all, fork, takeLatest, put, call } from 'redux-saga/effects';
+import { all, fork, takeLatest, throttle, put, call } from 'redux-saga/effects';
 import { ADD_POST_REQUEST, ADD_POST_SUCCESS, ADD_POST_FAILURE,
     ADD_COMMENT_REQUEST, ADD_COMMENT_SUCCESS, ADD_COMMENT_FAILURE,
 LOAD_MAIN_POSTS_FAILURE, LOAD_MAIN_POSTS_REQUEST, LOAD_MAIN_POSTS_SUCCESS,
@@ -112,8 +112,8 @@ function* loadMainPosts(action) {
 }
 
 function* watchMainLoadPosts() {
-    yield takeLatest(LOAD_MAIN_POSTS_REQUEST, loadMainPosts);
-}
+    yield throttle(2000, LOAD_MAIN_POSTS_REQUEST, loadMainPosts);
+};  // throttle : 몇초동안 같은 action은 못 들어오게 막음.
 
 function loadHashtagPostsAPI(tag, lastId, limit=10) {
     return axios.get(`/hashtag/${encodeURIComponent(tag)}?offset=${lastId}&limit=${limit}`);

@@ -1,8 +1,7 @@
-import React, { useEffect } from "react"; // next에서는 안 써도 되지만 useState 등을 사용하기 위해서 어차피 써야함.
+import React, { useEffect, useCallback } from "react"; // next에서는 안 써도 되지만 useState 등을 사용하기 위해서 어차피 써야함.
 // 넥스트의 링크 기능
 // 라우터는 그냥 pages의 파일 구조만으로 자동으로 된다.
 import { useDispatch, useSelector } from 'react-redux';
-
 import PostForm from '../components/PostForm';
 import PostCard from '../components/PostCard';
 import { LOAD_MAIN_POSTS_REQUEST } from "../reducers/post";
@@ -10,17 +9,19 @@ import { LOAD_MAIN_POSTS_REQUEST } from "../reducers/post";
 
 const Home = () => {
     const me = useSelector(state => state.user.me); // 너무 잘게 쪼개면 줄 수가 너무 많아지니깐 적당히......
-    const { mainPosts } = useSelector(state => state.post);
+    const { mainPosts, hasMorePost } = useSelector(state => state.post);
     const dispatch = useDispatch();
     
-    const onScroll = () => {
+    const onScroll = useCallback(() => {
         if ( window.scrollY + document.documentElement.clientHeight > document.documentElement.scrollHeight - 300){
-            dispatch({
-                type : LOAD_MAIN_POSTS_REQUEST,
-                lastId : mainPosts[mainPosts.length - 1].id,
-            })
+            if (hasMorePost) {
+                dispatch({
+                    type : LOAD_MAIN_POSTS_REQUEST,
+                    lastId : mainPosts[mainPosts.length - 1].id,
+                })
+            }
         }
-    }
+    }, [hasMorePost, mainPosts.length]);
     useEffect(() => {
         window.addEventListener('scroll', onScroll);
         return () => {
