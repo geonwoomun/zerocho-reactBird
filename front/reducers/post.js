@@ -116,7 +116,6 @@ const reducer = (state = initialState, action) => {
     case LOAD_MAIN_POSTS_REQUEST: {
       return {
         ...state,
-        mainPosts: []
       };
     }
     case LOAD_HASHTAG_POSTS_SUCCESS:
@@ -124,7 +123,7 @@ const reducer = (state = initialState, action) => {
     case LOAD_MAIN_POSTS_SUCCESS: {
       return {
         ...state,
-        mainPosts: action.data
+        mainPosts: state.mainPosts.concat(action.data),
       };
     }
     case LOAD_HASHTAG_POSTS_FAILURE:
