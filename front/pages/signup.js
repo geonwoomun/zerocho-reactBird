@@ -1,5 +1,4 @@
 import React, { useState, useCallback, useEffect } from 'react';
-
 import { Form, Input, Checkbox, Button } from 'antd';
 import { SIGN_UP_REQUEST } from '../reducers/user';
 import { useDispatch, useSelector } from 'react-redux';

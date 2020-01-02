@@ -34,7 +34,7 @@ const ReactBird = ({ Component, store, pageProps }) => {
 ReactBird.propTypes = {
     Component : PropTypes.elementType.isRequired,
     store : PropTypes.object.isRequired,
-    pageProps : PropTypes.object.isRequired,
+    pageProps : PropTypes.object.isRequired,    
 };
 //getInitalProps가 서버일 때도 실행되고 프론트일 때도 실행되니간 분기처리를 해줘야함.
 

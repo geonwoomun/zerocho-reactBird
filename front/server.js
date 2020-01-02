@@ -1,6 +1,6 @@
 const express = require('express');
 const next = require('next');
-const margan = require('morgan');
+const morgan = require('morgan');
 const cookieParser = require('cookie-parser');
 const expressSession = require('express-session');
 const dotenv = require('dotenv');
@@ -16,7 +16,7 @@ dotenv.config();
 
 app.prepare().then(() => { // next가 express를 돌리는 듯..?
     const server = express();
-    server.use(margan('dev'));
+    server.use(morgan('dev'));
     server.use(express.json());
     server.use(express.urlencoded({extended : true}));
     server.use(cookieParser(process.env.COOKIE_SECRET));

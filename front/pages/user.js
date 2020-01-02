@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import PropTypes from "prop-types";
 import { LOAD_USER_POSTS_REQUEST } from "../reducers/post";
 import { useSelector } from "react-redux";
@@ -6,13 +6,9 @@ import { Avatar, Card } from "antd";
 import { LOAD_USER_REQUEST } from "../reducers/user";
 import PostCard from "../components/PostCard";
 
-const User = ({ id }) => {
+const User = () => {
   const { mainPosts } = useSelector(state => state.post);
   const { userInfo } = useSelector(state => state.user);
-  useEffect(() => {
-    // 남의 정보 게시글을 가지고 와줘야함.
-    
-  }, [id]);
   return (
     <div>
       {userInfo ? (
