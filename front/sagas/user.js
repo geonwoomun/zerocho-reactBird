@@ -1,4 +1,4 @@
-import { all, fork, delay, takeLatest,takeEvery, call, put, take } from 'redux-saga/effects';
+import { all, fork, delay, takeLatest, call, put, take } from 'redux-saga/effects';
 import axios from 'axios';
 import {  LOG_OUT_REQUEST, LOG_IN_SUCCESS, LOG_IN_FAILURE, LOG_IN_REQUEST, SIGN_UP_REQUEST, SIGN_UP_SUCCESS, SIGN_UP_FAILURE,
 LOAD_USER_FAILURE, LOAD_USER_REQUEST, LOAD_USER_SUCCESS, LOG_OUT_FAILURE, LOG_OUT_SUCCESS, UNFOLLOW_USER_FAILURE, FOLLOW_USER_SUCCESS, FOLLOW_USER_FAILURE, UNFOLLOW_USER_SUCCESS, UNFOLLOW_USER_REQUEST,FOLLOW_USER_REQUEST, LOAD_FOLLOWERS_SUCCESS, LOAD_FOLLOWERS_FAILURE, LOAD_FOLLOWERS_REQUEST, LOAD_FOLLOWINGS_REQUEST, LOAD_FOLLOWINGS_FAILURE, LOAD_FOLLOWINGS_SUCCESS, REMOVE_FOLLOWER_REQUEST, REMOVE_FOLLOWER_FAILURE, REMOVE_FOLLOWER_SUCCESS, EDIT_NICKNAME_REQUEST, EDIT_NICKNAME_SUCCESS, EDIT_NICKNAME_FAILURE } from '../reducers/user';
@@ -28,7 +28,7 @@ function* loadUser(action) {
 }
 
 function* watchLoadUser() {
-        yield takeEvery(LOAD_USER_REQUEST, loadUser);
+        yield takeLatest(LOAD_USER_REQUEST, loadUser);
 }
 
 function logOutAPI() {
@@ -54,7 +54,7 @@ function* logOut() {
 }
 
 function* watchLogOut() {
-    yield takeEvery(LOG_OUT_REQUEST, logOut);
+    yield takeLatest(LOG_OUT_REQUEST, logOut);
 }
 
 
@@ -82,7 +82,7 @@ function* logIn(action) {
 }
 
 function* watchLogIn() {
-    yield takeEvery(LOG_IN_REQUEST, logIn);
+    yield takeLatest(LOG_IN_REQUEST, logIn);
 }
 
 function signUpAPI(signUpData) {
@@ -106,7 +106,7 @@ function* signUp(action) {
 }
 
 function* watchSignUp() {
-    yield takeEvery(SIGN_UP_REQUEST, signUp)
+    yield takeLatest(SIGN_UP_REQUEST, signUp)
 }
 
 function followAPI(userId) {
@@ -133,7 +133,7 @@ function* follow(action) {
 }
 
 function* watchFollow() {
-    yield takeEvery(FOLLOW_USER_REQUEST, follow)
+    yield takeLatest(FOLLOW_USER_REQUEST, follow)
 }
 
 function unfollowAPI(userId) {
@@ -160,7 +160,7 @@ function* unfollow(action) {
 }
 
 function* watchUnfollow() {
-    yield takeEvery(UNFOLLOW_USER_REQUEST, unfollow)
+    yield takeLatest(UNFOLLOW_USER_REQUEST, unfollow)
 }
 
 function loadFollowersAPI(userId, offset = 0, limit = 3) {
@@ -187,7 +187,7 @@ function* loadFollowers(action) {
 }
 
 function* watchLoadFollowers() {
-    yield takeEvery(LOAD_FOLLOWERS_REQUEST,loadFollowers)
+    yield takeLatest(LOAD_FOLLOWERS_REQUEST,loadFollowers)
 }
 
 
@@ -215,7 +215,7 @@ function* loadFollowings(action) {
 }
 
 function* watchLoadFollowings() {
-    yield takeEvery(LOAD_FOLLOWINGS_REQUEST,loadFollowings)
+    yield takeLatest(LOAD_FOLLOWINGS_REQUEST,loadFollowings)
 }
 
 function removeFollowerAPI(userId) {
@@ -242,7 +242,7 @@ function* removeFollower(action) {
 }
 
 function* watchRemoveFollower() {
-    yield takeEvery(REMOVE_FOLLOWER_REQUEST,removeFollower)
+    yield takeLatest(REMOVE_FOLLOWER_REQUEST,removeFollower)
 }
 
 function editNicknameAPI(nickname) {
@@ -269,7 +269,7 @@ function* editNickname(action) {
 }
 
 function* watchEditNickname() {
-    yield takeEvery(EDIT_NICKNAME_REQUEST,editNickname)
+    yield takeLatest(EDIT_NICKNAME_REQUEST,editNickname)
 }
 
 
