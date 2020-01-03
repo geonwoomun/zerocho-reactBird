@@ -30,6 +30,10 @@ app.prepare().then(() => { // next가 express를 돌리는 듯..?
         },
     }));
 
+    server.get('/post/:id', (req, res) => {
+        return app.render(req,res, '/post', { id : req.params.id})//app이 next임
+    }); 
+
     server.get('/hashtag/:tag', (req, res) => {
         return app.render(req,res, '/hashtag', { tag : req.params.tag})//app이 next임
     }); //동적인 주소를 나타내기 위해 /hashtag랑 pages의 /hashtag랑 연결을 해줌
