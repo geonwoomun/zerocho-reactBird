@@ -4,3 +4,6 @@ front/.env
 
 back/node_modules
 back/.env
+
+revisedFront/node_modules
+revisedFront/.next
